@@ -23,8 +23,19 @@
         ul { list-style-type: disc; padding-left: 20px; }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://threejs.org/examples/js/renderers/CSS3DRenderer.js"></script>
-    <script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@r128/examples/js/renderers/CSS3DRenderer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@r128/examples/js/controls/OrbitControls.js"></script>
+    <script>
+        // Wait for scripts to load
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                if (typeof init === 'function') {
+                    init();
+                    animate();
+                }
+            }, 1000);
+        });
+    </script>
 </head>
 <body>
     <div id="container"></div>
@@ -97,8 +108,11 @@
         const panels = [];
         const clouds = [];
 
-        init();
-        animate();
+        // Wait for all external scripts to load before initializing
+        window.addEventListener('load', function() {
+            init();
+            animate();
+        });
 
         function init() {
             const container = document.getElementById('container');
@@ -115,7 +129,7 @@
             container.appendChild(webglRenderer.domElement);
 
             // CSS3D Renderer
-            cssRenderer = new CSS3DRenderer();
+            cssRenderer = new THREE.CSS3DRenderer();
             cssRenderer.setSize(window.innerWidth, window.innerHeight);
             cssRenderer.domElement.style.position = 'absolute';
             cssRenderer.domElement.style.top = 0;

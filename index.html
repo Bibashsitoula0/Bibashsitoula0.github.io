@@ -3,219 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bibash Sitoula - 3D Portfolio</title>
+    <title>Bibash Sitoula | Full-Stack Dotnet Architect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body { margin: 0; overflow: hidden; background: #000; color: #fff; font-family: Arial, sans-serif; }
-        #container { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        .panel { 
-            position: absolute; 
-            background: rgba(0, 0, 0, 0.7); 
-            border: 1px solid #fff; 
-            padding: 20px; 
-            width: 400px; 
-            height: 600px; 
-            overflow-y: auto; 
-            box-shadow: 0 0 10px rgba(255,255,255,0.5); 
-            border-radius: 10px;
+        :root { --neon: #00f2ff; --bg: #020205; --card: rgba(10, 10, 20, 0.7); }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: #fff; font-family: 'Inter', sans-serif; overflow-x: hidden; scroll-behavior: smooth; }
+        
+        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; z-index: 0; outline: none; }
+
+        /* Scrollytelling Layout */
+        .viewport { position: relative; z-index: 1; pointer-events: none; }
+        section { 
+            min-height: 100vh; padding: 5vh 10%; display: flex; align-items: center; 
+            opacity: 0; transform: translateY(50px); transition: all 1s ease;
         }
-        h1 { color: #00ffcc; }
-        h2 { color: #ffcc00; }
-        ul { list-style-type: disc; padding-left: 20px; }
+        section.visible { opacity: 1; transform: translateY(0); }
+
+        .glass-box {
+            pointer-events: auto; background: var(--card); backdrop-filter: blur(20px);
+            border: 1px solid rgba(0, 242, 255, 0.2); border-radius: 2px; padding: 50px;
+            max-width: 700px; box-shadow: 20px 20px 60px rgba(0,0,0,0.8);
+            position: relative; overflow: hidden;
+        }
+        .glass-box::before {
+            content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--neon); box-shadow: 0 0 15px var(--neon);
+        }
+
+        h1 { font-family: 'Syncopate', sans-serif; font-size: 3.5rem; line-height: 1; margin: 0; color: #fff; }
+        h2 { font-family: 'Syncopate', sans-serif; font-size: 1.2rem; color: var(--neon); letter-spacing: 4px; margin-bottom: 30px; }
+        
+        .tag { 
+            display: inline-block; padding: 4px 12px; font-size: 0.7rem; font-weight: 600;
+            border: 1px solid var(--neon); margin: 4px; color: var(--neon); text-transform: uppercase;
+        }
+
+        .exp-item { margin-bottom: 40px; }
+        .role { font-weight: 700; font-size: 1.1rem; color: #fff; }
+        .meta { color: #888; font-size: 0.8rem; margin-bottom: 10px; text-transform: uppercase; }
+        ul { list-style: none; padding: 0; }
+        li { margin-bottom: 12px; font-size: 0.95rem; line-height: 1.6; color: #ccc; position: relative; padding-left: 20px; }
+        li::before { content: "→"; position: absolute; left: 0; color: var(--neon); }
+
+        .contact-bar { 
+            position: fixed; bottom: 40px; left: 40px; z-index: 100; 
+            font-size: 0.7rem; letter-spacing: 1px; line-height: 1.8;
+        }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@r128/examples/js/renderers/CSS3DRenderer.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@r128/examples/js/controls/OrbitControls.js"></script>
-    <script>
-        // Wait for scripts to load
-        window.addEventListener('load', function() {
-            setTimeout(function() {
-                if (typeof init === 'function') {
-                    init();
-                    animate();
-                }
-            }, 1000);
-        });
-    </script>
 </head>
 <body>
-    <div id="container"></div>
 
-    <!-- Portfolio Panels -->
-    <div id="about" class="panel">
-        <h1>Bibash Sitoula</h1>
-        <p>Dotnet Developer</p>
-        <p>Email: sitoulabibash666@gmail.com</p>
-        <p>Location: Koshi Province, Nepal</p>
-        <p>Phone: 9804961653</p>
-        <p>GitHub: <a href="https://github.com/Bibashsitoula0" target="_blank">Bibashsitoula0</a></p>
-        <p>LinkedIn: <a href="https://www.linkedin.com/in/bibash-sitaula-374754333" target="_blank">Bibash Sitoula</a></p>
-        <p>Facebook: <a href="https://www.facebook.com/bibash.sitoula/" target="_blank">Bibash Sitoula</a></p>
-        <h2>Summary</h2>
-        <p>3+ years of experience in building scalable applications across frontend and backend. Skilled in .NET, database integration, and RESTful API development with a strong focus on performance optimization and reusable components. Detail-oriented problem solver with excellent teamwork and communication skills, committed to delivering high-quality, user-focused software solutions.</p>
+    <div id="canvas-container"></div>
+
+    <div class="contact-bar">
+        <div>EMAIL: sitoulabibash666@gmail.com</div>
+        <div>PHONE: 9804961653 | LOCATION: Koshi Province, Nepal</div>
+        <div>GITHUB: github.com/Bibashsitoula0 | LINKEDIN: linkedin.com/in/bibash-sitaula-374754333</div>
     </div>
 
-    <div id="skills" class="panel">
-        <h2>Technical Skills</h2>
-        <ul>
-            <li>Programming: C#, JavaScript/TypeScript, SQL</li>
-            <li>Backend: .NET Core/Framework, EF Core, Dapper, REST APIs</li>
-            <li>Databases: MS SQL Server, PostgreSQL</li>
-            <li>Frontend: Angular</li>
-            <li>DevOps & Cloud: CI/CD, Basic Azure</li>
-            <li>Testing: XUnit</li>
-            <li>Architecture: Modular Monoliths</li>
-            <li>Additional: AI, Alpine.js, Angular, Blazor</li>
-        </ul>
+    <div class="viewport">
+        <section class="visible">
+            <div class="glass-box">
+                <h2>Full Stack DEVELOPER</h2>
+                <h1>BIBASH<br>SITOULA</h1>
+                <p style="font-size: 1.1rem; margin-top: 20px; color: #aaa; line-height: 1.8;">
+                    3+ years of experience in building scalable applications across frontend and backend. 
+                    Skilled in .NET, database integration, and RESTful API development with a strong focus on 
+                    performance optimization and reusable components.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <div class="glass-box">
+                <h2>PROFESSIONAL SUMMARY</h2>
+                <p style="font-size: 0.95rem; line-height: 1.8; color: #ccc;">
+                    Detail-oriented problem solver with excellent teamwork and communication skills, committed to 
+                    delivering high-quality, user-focused software solutions. Specialized in architecting modular 
+                    monoliths and building scalable backend systems with focus on performance optimization and 
+                    clean code principles.
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <div class="glass-box">
+                <h2>PROFESSIONAL EXPERIENCE</h2>
+                <div class="exp-item">
+                    <div class="meta">Nov 2024 - Sep 2025</div>
+                    <div class="role">Turboline.ai - Full Stack Developer</div>
+                    <ul>
+                        <li>Developed scalable real-time data streaming pipeline with CSV-to-Excel conversion and multi-database integration (PostgreSQL, MySQL)</li>
+                        <li>Integrated automated visualization workflows and generated dynamic dashboards using Turboline.AI tools</li>
+                        <li>Developed reusable ASP.NET Core NuGet packages with chart templates, API connectors, and drag-and-drop UI components</li>
+                        <li>Engineered NLP pipeline to convert user-friendly queries into optimized SQL for non-technical database access</li>
+                        <li>Implemented cloud synchronization via Azure Blob Storage and Google Drive for data persistence</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="glass-box">
+                <h2>EXPERIENCE CONTINUED</h2>
+                <div class="exp-item">
+                    <div class="meta">Jun 2022 - Nov 2024</div>
+                    <div class="role">Team Next Solutions - Backend Developer</div>
+                    <ul>
+                        <li>Established and strengthened APIs to synchronize web application data with mobile platforms</li>
+                        <li>Worked on USAID-provided KISAN II Project (NGO) - generated quarterly reports on various topics</li>
+                        <li>Contributed to international projects including Map Maldives with complex geographical data integration</li>
+                        <li>Participated in technical discussions for system design, analysis, and troubleshooting</li>
+                        <li>Set up, maintained, and developed continuous build/integration infrastructure for deployment pipelines</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="glass-box">
+                <h2>TECHNICAL SKILLS</h2>
+                <div style="margin-top: 20px;">
+                    <p style="color: #888; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;">Programming Languages</p>
+                    <span class="tag">C#</span>
+                    <span class="tag">JavaScript</span>
+                    <span class="tag">TypeScript</span>
+                    <span class="tag">SQL</span>
+                </div>
+                <div style="margin-top: 25px;">
+                    <p style="color: #888; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;">Backend & Frameworks</p>
+                    <span class="tag">.NET Core</span>
+                    <span class="tag">.NET Framework</span>
+                    <span class="tag">EF Core</span>
+                    <span class="tag">Dapper</span>
+                    <span class="tag">REST APIs</span>
+                </div>
+                <div style="margin-top: 25px;">
+                    <p style="color: #888; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;">Databases & Cloud</p>
+                    <span class="tag">MS SQL Server</span>
+                    <span class="tag">PostgreSQL</span>
+                    <span class="tag">Azure</span>
+                    <span class="tag">Azure Blob Storage</span>
+                </div>
+                <div style="margin-top: 25px;">
+                    <p style="color: #888; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;">Frontend & DevOps</p>
+                    <span class="tag">Angular</span>
+                    <span class="tag">CI/CD</span>
+                    <span class="tag">XUnit</span>
+                    <span class="tag">Modular Monoliths</span>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="glass-box">
+                <h2>EDUCATION</h2>
+                <div class="exp-item">
+                    <div class="role" style="margin-bottom: 15px;">Bachelor of Computer Application (BCA)</div>
+                    <div class="meta">Madan Bhandari Memorial College, Nepal</div>
+                    <div style="color: #aaa; font-size: 0.9rem;">June 2020 – 2025</div>
+                </div>
+                <div class="exp-item" style="margin-top: 35px;">
+                    <div class="role" style="margin-bottom: 15px;">Higher Secondary Education (+2)</div>
+                    <div class="meta">Kankai Education Foundation, Nepal</div>
+                    <div style="color: #aaa; font-size: 0.9rem;">2018 – 2020</div>
+                </div>
+                <div style="margin-top: 35px; padding-top: 25px; border-top: 1px solid rgba(0, 242, 255, 0.1);">
+                    <p style="color: #888; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;">Languages</p>
+                    <div style="margin-bottom: 12px;">
+                        <span style="color: #fff; font-weight: 600;">Nepali:</span>
+                        <span style="color: #aaa;">Native</span>
+                    </div>
+                    <div style="margin-bottom: 12px;">
+                        <span style="color: #fff; font-weight: 600;">English:</span>
+                        <span style="color: #aaa;">Lower-Advanced (A1)</span>
+                    </div>
+                    <div>
+                        <span style="color: #fff; font-weight: 600;">Hindi:</span>
+                        <span style="color: #aaa;">Lower-Advanced (A1)</span>
+                    </div>
+                </div>
+            </div>
+        </section>
     </div>
 
-    <div id="experience1" class="panel">
-        <h2>Professional Experience</h2>
-        <h3>Turboline.ai (Nov 2024 – Sep 2025)</h3>
-        <ul>
-            <li>Developed a scalable real-time data streaming pipeline, automating CSV-to-Excel conversion, dynamic data classification, multi-database integration (PostgreSQL, MySQL, etc.), and cloud synchronization via Azure Blob Storage and Google Drive.</li>
-            <li>Integrated automated visualization workflows using Turboline.AI’s tools to generate dynamic dashboards and reports; developed reusable ASP.NET Core NuGet packages with pre-built chart templates, API connectors, and drag-and-drop UI components.</li>
-            <li>Engineered a natural language processing (NLP) pipeline to convert user-friendly queries into optimized SQL, enabling non-technical users to interact directly with databases.</li>
-        </ul>
-    </div>
+    <script type="importmap">
+        { "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js" } }
+    </script>
 
-    <div id="experience2" class="panel">
-        <h3>Team Next Solutions (Jun 2022 – Nov 2024)</h3>
-        <ul>
-            <li>Establish and strengthen API to sync the data of web application with mobile application.</li>
-            <li>Worked on us-aid provided KISAN II Project (NGO) & generated Quarterly reports on different topics.</li>
-            <li>Worked on international projects like Map Maldives.</li>
-            <li>Participate in technical discussions to aid system design, analysis, and troubleshooting.</li>
-            <li>Set-up, maintenance and ongoing development of continuous build/ integration infrastructure.</li>
-        </ul>
-    </div>
+    <script type="module">
+        import * as THREE from 'three';
 
-    <div id="education" class="panel">
-        <h2>Education</h2>
-        <ul>
-            <li>Bachelor of Computer Application (BCA), Madan Bhandari Memorial College, Nepal | June 2020 – 2025.</li>
-            <li>Higher Secondary Education (+2), Kankai Education Foundation, Nepal | 2018–2020.</li>
-        </ul>
-        <h2>Languages</h2>
-        <ul>
-            <li>Nepali: Native</li>
-            <li>English: Lower-Advanced (A1)</li>
-            <li>Hindi: Lower-Advanced (A1)</li>
-        </ul>
-    </div>
+        // 1. Scene & Camera Architecture
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('canvas-container').appendChild(renderer.domElement);
 
-    <script>
-        let camera, scene, webglRenderer, cssRenderer, controls;
-        const panels = [];
-        const clouds = [];
+        // 2. Connective Particle System (Modular Monolith Concept)
+        const particleCount = 200;
+        const geometry = new THREE.BufferGeometry();
+        const positions = new Float32Array(particleCount * 3);
+        const velocities = new Float32Array(particleCount * 3);
 
-        // Wait for all external scripts to load before initializing
-        window.addEventListener('load', function() {
-            init();
-            animate();
+        for (let i = 0; i < particleCount * 3; i++) {
+            positions[i] = (Math.random() - 0.5) * 30;
+            velocities[i] = (Math.random() - 0.5) * 0.02;
+        }
+
+        geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+        const material = new THREE.PointsMaterial({ color: 0x00f2ff, size: 0.15 });
+        const points = new THREE.Points(geometry, material);
+        scene.add(points);
+
+        // Lines connecting particles
+        const lineMaterial = new THREE.LineBasicMaterial({ color: 0x00f2ff, transparent: true, opacity: 0.15 });
+        let lineMesh;
+
+        // 3. Mouse Interaction
+        let mouseX = 0, mouseY = 0;
+        document.addEventListener('mousemove', (e) => {
+            mouseX = (e.clientX - window.innerWidth / 2) * 0.002;
+            mouseY = (e.clientY - window.innerHeight / 2) * 0.002;
         });
 
-        function init() {
-            const container = document.getElementById('container');
-
-            camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 1, 5000);
-            camera.position.set(0, 0, 2000);
-
-            scene = new THREE.Scene();
-
-            // WebGL Renderer
-            webglRenderer = new THREE.WebGLRenderer({ antialias: true });
-            webglRenderer.setClearColor(0x000000);
-            webglRenderer.setSize(window.innerWidth, window.innerHeight);
-            container.appendChild(webglRenderer.domElement);
-
-            // CSS3D Renderer
-            cssRenderer = new THREE.CSS3DRenderer();
-            cssRenderer.setSize(window.innerWidth, window.innerHeight);
-            cssRenderer.domElement.style.position = 'absolute';
-            cssRenderer.domElement.style.top = 0;
-            container.appendChild(cssRenderer.domElement);
-
-            // Add lights for better visibility (optional for basic materials)
-            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
-            scene.add(ambientLight);
-
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
-            directionalLight.position.set(0, 1, 1).normalize();
-            scene.add(directionalLight);
-
-            // Add animated clouds background
-            const textureLoader = new THREE.TextureLoader();
-            const cloudTexture = textureLoader.load('https://threejs.org/examples/textures/sprites/cloud.png');
-            const cloudGeometry = new THREE.PlaneGeometry(500, 500);
-            const cloudMaterial = new THREE.MeshBasicMaterial({
-                map: cloudTexture,
-                transparent: true,
-                blending: THREE.AdditiveBlending,
-                depthTest: false,
-                opacity: 0.3
-            });
-
-            for (let i = 0; i < 20; i++) {
-                const cloud = new THREE.Mesh(cloudGeometry, cloudMaterial);
-                cloud.position.set(
-                    Math.random() * 2000 - 1000,
-                    Math.random() * 2000 - 1000,
-                    Math.random() * 1000 - 2000
-                );
-                cloud.rotation.z = Math.random() * 2 * Math.PI;
-                cloud.scale.setScalar(Math.random() * 2 + 1);
-                scene.add(cloud);
-                clouds.push(cloud);
-            }
-
-            // Add panels
-            const elements = [
-                document.getElementById('about'),
-                document.getElementById('skills'),
-                document.getElementById('experience1'),
-                document.getElementById('experience2'),
-                document.getElementById('education')
-            ];
-
-            elements.forEach((element, index) => {
-                const object = new THREE.CSS3DObject(element);
-                object.position.x = (index - 2) * 500;
-                object.position.y = 0;
-                object.position.z = 0;
-                object.rotation.y = Math.PI / 6 * (index % 2 ? 1 : -1);
-                scene.add(object);
-                panels.push(object);
-            });
-
-            controls = new THREE.OrbitControls(camera, cssRenderer.domElement);
-            controls.enableZoom = true;
-            controls.enablePan = true;
-
-            window.addEventListener('resize', onWindowResize);
-        }
-
-        function onWindowResize() {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            webglRenderer.setSize(window.innerWidth, window.innerHeight);
-            cssRenderer.setSize(window.innerWidth, window.innerHeight);
-        }
-
+        // 4. Animation Frame
         function animate() {
             requestAnimationFrame(animate);
 
-            // Animate clouds
-            clouds.forEach((cloud, index) => {
-                cloud.position.z += 0.1 + (index * 0.01);
-                if (cloud.position.z > 500) {
-                    cloud.position.z = -2000;
-                }
-            });
+            // Move particles
+            const pos = geometry.attributes.position.array;
+            for (let i = 0; i < particleCount * 3; i++) {
+                pos[i] += velocities[i];
+                if (pos[i] > 15 || pos[i] < -15) velocities[i] *= -1;
+            }
+            geometry.attributes.position.needsUpdate = true;
 
-            controls.update();
-            webglRenderer.render(scene, camera);
-            cssRenderer.render(scene, camera);
+            // Subtle camera sway
+            camera.position.x += (mouseX - camera.position.x) * 0.05;
+            camera.position.y += (-mouseY - camera.position.y) * 0.05;
+            camera.lookAt(scene.position);
+
+            // Dynamic background rotation
+            points.rotation.y += 0.001;
+
+            renderer.render(scene, camera);
         }
+
+        // 5. Scroll Visibility Logic
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.2 });
+
+        document.querySelectorAll('section').forEach(s => observer.observe(s));
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        animate();
     </script>
 </body>
 </html>
